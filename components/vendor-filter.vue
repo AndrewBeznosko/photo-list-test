@@ -8,11 +8,17 @@
             </div>
         </div>
         <div class="vendor-filter__scroll-wrap">
-            <div class="vendor-filter__scroll">
-                <div class="vendor-filter__list">
-                    <div class="vendor-filter__item"></div>
-                    <div class="vendor-filter__item"></div>
-                    <div class="vendor-filter__item"></div>
+            <div class="vendor-filter__scroll scrollbar-is-hidden">
+                <div v-if="photos.length" class="vendor-filter__list">
+                    <div v-for="(group, i) in transformedPhotos" :key="i" class="media-group">
+                        <h4 class="media-group__title">{{ i }}</h4>
+                        <div v-for="item in group" :key="item.id" class="media vendor-filter__item">
+                            <div class="media__img-block">
+                                <img :src="item.thumbnailUrl" :alt="item.title" class="media__img">
+                            </div>
+                            <p class="media__txt">{{ item.title }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -24,59 +30,57 @@ export default {
     props: {},
 
     data () {
-        return {};
+        return {
+            photos: [],
+            short_photos_list: []
+        };
     },
 
-    computed: {},
+    computed: {
+        transformedPhotos() {
+            let arr = this.maxAlbumsCount(this.photos, 32),
+                arrSorted = this.sortByField(arr, 'title'),
+                arrGrouped = {}
+            
+            // grouping 
+            arrSorted.map((el) => {
+                let symb = this.getFirstSymb(el.title)
+                if(!arrGrouped[symb]) { arrGrouped[symb] = [] }
+                arrGrouped[symb].push(el)
+            })
+            
+            return this.maxItemsInAlbum(arrGrouped, 10)
+        }
+    },
 
     created () {
     },
 
-    methods: {},
+    mounted() {
+        this.getPhotos()
+    },
+
+    methods: {
+        async getPhotos() {
+            const photos = await this.$axios.$get('http://jsonplaceholder.typicode.com/photos')
+            this.photos = photos
+        },
+        sortByField(arr, field) {
+            return arr.sort((a, b) => a[field] > b[field] ? 1 : -1)
+        },
+        getFirstSymb(str) {
+            return str.charAt(0).toUpperCase()
+        },
+        maxAlbumsCount(arr, count) {
+            return arr.filter(el => +(el.albumId) <= count)
+        },
+        maxItemsInAlbum(obj, count) {
+            let shortObj = {}
+            for(let prop in obj) {
+                shortObj[prop] = obj[prop].slice(0, count)
+            }
+            return shortObj
+        }
+    },
 };
 </script>
-
-<style lang="scss">
-.vendor-filter {
-    font-weight: 700;
-    font-family: Open Sans, Roboto, sans-serif;
-    width: 1300px;
-    height: 600px;
-    margin: auto;
-    padding: 3.6rem 4.8rem 6rem;
-    font-size: 1.2rem;
-    background: #ffffff;
-    border-radius: 1.2rem;
-    box-sizing: border-box;
-
-    &__header {
-        margin: 0 0 1.5rem;
-    }
-
-    &__title {
-        font-weight: bold;
-        font-size: 1.4rem;
-        line-height: 1.9rem;
-    }
-
-    &__name {
-        margin: 0 0.5rem;
-        text-decoration: underline;
-        cursor: pointer;
-    }
-
-    &__scroll-wrap {
-        overflow: hidden;
-    }
-
-    &__scroll {
-        width: 100%;
-        max-height: 66rem;
-        overflow-y: auto;
-    }
-
-    &__list {
-        position: relative;
-    }
-}
-</style>

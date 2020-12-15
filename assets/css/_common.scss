@@ -1,0 +1,115 @@
+// ===============================================================
+// vendor-filter
+// ===============================================================
+.vendor-filter {
+    font-weight: 700;
+    font-family: Open Sans, Roboto, sans-serif;
+    width: 1300px;
+    height: 600px;
+    margin: auto;
+    padding: 3.6rem 4.8rem 6rem;
+    font-size: 1.2rem;
+    background: #ffffff;
+    border-radius: 1.2rem;
+    box-sizing: border-box;
+
+    &__header {
+        margin: 0 0 1.5rem;
+    }
+
+    &__title {
+        font-weight: bold;
+        font-size: 1.4rem;
+        line-height: 1.9rem;
+    }
+
+    &__name {
+        margin: 0 0.5rem;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    &__scroll-wrap {
+        overflow: hidden;
+        height: 100%;
+        max-height: 100%;
+        position: relative;
+    }
+
+    &__scroll {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+    }
+
+    &__list {
+        position: relative;
+        column-count: 4;
+        column-gap: 30px;
+    }
+}
+
+// ===============================================================
+// media-group && media
+// ===============================================================
+.media-group {
+    display: inline-block;
+    max-width: 100%;
+    margin-bottom: 26px;
+
+    &__title {
+        display: inline-block;
+        min-width: 52px;
+        margin: 0;
+        font-weight: bold;
+        font-size: 12px;
+        line-height: 16px;
+        text-align: center;
+        color: #1B204F;
+    }
+}
+
+.media {
+    background: #F7F8F9;
+    border-radius: 8px;
+    padding: 4px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+
+    &__img-block {
+        width: 32px;
+        min-width: 32px;
+        height: 32px;
+        margin-right: 10px;
+        position: relative;
+        background-color: #C4C4C4;
+        border-radius: 8px;
+    }
+
+    &__img {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    &__txt {
+        font-style: normal;
+        font-weight: bold;
+        font-size: 12px;
+        line-height: 16px;
+        color: #1C214C;
+        text-overflow: ellipsis;
+        margin: 0;
+        overflow: hidden;
+        height: 1.2em;
+        white-space: nowrap;
+    }
+}

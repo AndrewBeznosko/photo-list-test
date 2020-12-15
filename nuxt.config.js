@@ -2,7 +2,7 @@ export default {
     mode: 'spa',
 
     head: {
-        title: 'CC',
+        title: 'Photobank',
         meta: [
             { charset: 'utf-8' },
         ],
@@ -10,5 +10,11 @@ export default {
 
     plugins: [],
 
-    buildModules: []
+    modules: ['@nuxtjs/axios'],
+
+    buildModules: [],
+
+    css: [
+        '~/assets/css/main.scss'
+    ]
 };
