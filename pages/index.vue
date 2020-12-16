@@ -16,9 +16,3 @@ export default {
     methods: {},
 };
 </script>
-
-<style lang="scss">
-body {
-    background-image: url('../static/img/bg.jpg');
-}
-</style>
