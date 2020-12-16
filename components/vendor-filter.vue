@@ -54,11 +54,11 @@ export default {
         return {
             photos: [],
             favorites: [],
+            shortAlbumsList: '',
             filters: {
                 byAZ: {
                     id: 0,
                     name: 'По алфавиту',
-                    // func: this.transformPhotosByFavorites()
                 },
                 byAlbum: {
                     id: 1,
@@ -71,6 +71,16 @@ export default {
             },
             selectedFilter: 0,
         };
+    },
+
+    watch: {
+        selectedFilter(val) {
+            if(this.filters.byAZ.id == val) {
+                this.transformPhotos(JSON.parse(this.shortAlbumsList))
+            } else if(this.filters.byAlbum.id == val) {
+                this.transformPhotosByAlbum(JSON.parse(this.shortAlbumsList))
+            }
+        }
     },
 
     computed: {
@@ -87,20 +97,30 @@ export default {
     methods: {
         async getPhotos() {
             const response = await this.$axios.$get('http://jsonplaceholder.typicode.com/photos')
-            this.transformPhotos(response)
+            this.shortAlbumsList = JSON.stringify(this.maxAlbumsCount(response, 32))
+
+            this.transformPhotos(JSON.parse(this.shortAlbumsList))
         },
         transformPhotos(photos) {
-            let arr = this.maxAlbumsCount(photos, 32),
-                arrSorted = this.sortByField(arr, 'title'),
+            let arrSorted = this.sortByField(photos, 'title'),
                 arrGrouped = this.groupBySymb(arrSorted)
             
-            this.photos = this.maxItemsInAlbum(arrGrouped, 10)
+            this.photos = this.maxItemsInEachAlbum(arrGrouped, 10)
         },
         transformPhotosByAlbum(photos) {
-
+            let arrSorted = this.sortByField(photos, 'title'),
+                arrGrouped = this.groupByAlbum(arrSorted)
+            
+            this.photos = this.maxItemsInEachAlbum(arrGrouped, 10)
         },
         sortByField(arr, field) {
             return arr.sort((a, b) => a[field] > b[field] ? 1 : -1)
+        },
+        sortByKey(arr, key) {
+            return arr.sort(function(a, b) {
+                var x = a[key]; var y = b[key];
+                return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+            })
         },
         groupBySymb(arr) {
             let arrGrouped = {}
@@ -112,13 +132,24 @@ export default {
             })
             return arrGrouped
         },
+        groupByAlbum(arr) {
+            let arrGrouped = {}
+            arr.map((el) => {
+                el['isFavorite'] = false; // add state
+                let album = `${el.albumId} - AlbumID`
+                if(!arrGrouped[album]) { arrGrouped[album] = [] }
+                arrGrouped[album].push(el)
+            })
+
+            return arrGrouped
+        },
         getFirstSymb(str) {
             return str.charAt(0).toUpperCase()
         },
         maxAlbumsCount(arr, count) {
             return arr.filter(el => +(el.albumId) <= count)
         },
-        maxItemsInAlbum(obj, count) {
+        maxItemsInEachAlbum(obj, count) {
             let shortObj = {}
             for(let prop in obj) {
                 shortObj[prop] = obj[prop].slice(0, count)
@@ -128,7 +159,7 @@ export default {
         toggleFavorite(item) {
             let state = item.isFavorite = !item.isFavorite
             let curIndex = this.favorites.findIndex((el) => el.id == item.id)
-            console.log(curIndex)
+
             if(state) {
                 if(curIndex < 0) this.favorites.push(item)
             } else {
