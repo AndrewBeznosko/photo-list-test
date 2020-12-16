@@ -102,7 +102,7 @@ export default {
 
     methods: {
         async getPhotos() {
-            const response = await this.$axios.$get('http://jsonplaceholder.typicode.com/photos')
+            const response = await this.$axios.$get('https://jsonplaceholder.typicode.com/photos')
             this.shortAlbumsList = JSON.stringify(this.maxAlbumsCount(response, 32))
 
             this.chekFavorites(JSON.parse(this.shortAlbumsList))
