@@ -27,18 +27,25 @@
                                     <button @click="item.isFavorite = toggleFavorite(item)" type="button" class="media__btn-icon" :class="{ 'media__btn-icon--is-favorite' : item.isFavorite }"></button>
                                 </div>
                             </div>
+                            <media 
+                                v-for="item in group"
+                                :key="`media-${item.id}`"
+                                :thumbnail-url="item.thumbnailUrl"
+                                :title="item.title"
+                                :is-favorite="item.isFavorite"
+                                @toggle-favorite="item.isFavorite = toggleFavorite(item)"
+                            />
                         </div>
                     </template>
                     <template v-else-if="filters.byFavorites.id == selectedFilter">
-                        <div v-for="item in favorites" :key="item.id" class="media vendor-filter__item">
-                            <div class="media__img-block">
-                                <img :src="item.thumbnailUrl" :alt="item.title" class="media__img">
-                            </div>
-                            <p class="media__txt">{{ item.title }}</p>
-                            <div class="media__btns">
-                                <button @click="item.isFavorite = toggleFavorite(item)" type="button" class="media__btn-icon" :class="{ 'media__btn-icon--is-favorite' : item.isFavorite }"></button>
-                            </div>
-                        </div>
+                        <media 
+                            v-for="item in favorites" 
+                            :key="item.id"
+                            :thumbnail-url="item.thumbnailUrl"
+                            :title="item.title"
+                            :is-favorite="item.isFavorite"
+                            @toggle-favorite="item.isFavorite = toggleFavorite(item)"
+                        />
                     </template>
                 </div>
             </div>
@@ -47,9 +54,11 @@
 </template>
 
 <script>
-export default {
-    props: {},
+import Media from '@/components/media';
 
+export default {
+    components: { Media },
+    
     data () {
         return {
             photos: [],
@@ -74,20 +83,14 @@ export default {
     },
 
     watch: {
+        favorites(val) {
+            localStorage.setItem('favorites', JSON.stringify(val));
+        },
         selectedFilter(val) {
-            if(this.filters.byAZ.id == val) {
-                this.transformPhotos(JSON.parse(this.shortAlbumsList))
-            } else if(this.filters.byAlbum.id == val) {
-                this.transformPhotosByAlbum(JSON.parse(this.shortAlbumsList))
-            }
+            localStorage.setItem('selectedFilter', JSON.stringify(val));
+            this.chekFavorites(JSON.parse(this.shortAlbumsList))
+            this.initFilters(val)
         }
-    },
-
-    computed: {
-        
-    },
-
-    created () {
     },
 
     mounted() {
@@ -99,7 +102,15 @@ export default {
             const response = await this.$axios.$get('http://jsonplaceholder.typicode.com/photos')
             this.shortAlbumsList = JSON.stringify(this.maxAlbumsCount(response, 32))
 
-            this.transformPhotos(JSON.parse(this.shortAlbumsList))
+            this.chekFavorites(JSON.parse(this.shortAlbumsList))
+
+            let selectedFilter = JSON.parse(localStorage.getItem('selectedFilter'));
+            if(selectedFilter != null) {
+                this.selectedFilter = selectedFilter
+                this.initFilters(selectedFilter)
+            } else {
+                this.transformPhotos(JSON.parse(this.shortAlbumsList))
+            }
         },
         transformPhotos(photos) {
             let arrSorted = this.sortByField(photos, 'title'),
@@ -116,16 +127,9 @@ export default {
         sortByField(arr, field) {
             return arr.sort((a, b) => a[field] > b[field] ? 1 : -1)
         },
-        sortByKey(arr, key) {
-            return arr.sort(function(a, b) {
-                var x = a[key]; var y = b[key];
-                return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-            })
-        },
         groupBySymb(arr) {
             let arrGrouped = {}
             arr.map((el) => {
-                el['isFavorite'] = false; // add state
                 let symb = this.getFirstSymb(el.title)
                 if(!arrGrouped[symb]) { arrGrouped[symb] = [] }
                 arrGrouped[symb].push(el)
@@ -135,7 +139,6 @@ export default {
         groupByAlbum(arr) {
             let arrGrouped = {}
             arr.map((el) => {
-                el['isFavorite'] = false; // add state
                 let album = `${el.albumId} - AlbumID`
                 if(!arrGrouped[album]) { arrGrouped[album] = [] }
                 arrGrouped[album].push(el)
@@ -166,6 +169,30 @@ export default {
                 if(curIndex >= 0) this.favorites.splice(curIndex, 1)
             }
             return state
+        },
+        chekFavorites(arr) {
+            let fav = localStorage.getItem('favorites')
+            if(fav != null) this.favorites = JSON.parse(fav)
+
+            let modifiedArr = arr.map(el => {
+                for(let favorite of this.favorites) {
+                    if(favorite.id == el.id) {
+                        el['isFavorite'] = true
+                        return el
+                    }
+                }
+                el['isFavorite'] = false;
+                return el
+            });
+
+            this.shortAlbumsList = JSON.stringify(modifiedArr)
+        },
+        initFilters(val) {
+            if(this.filters.byAZ.id == val) {
+                this.transformPhotos(JSON.parse(this.shortAlbumsList))
+            } else if(this.filters.byAlbum.id == val) {
+                this.transformPhotosByAlbum(JSON.parse(this.shortAlbumsList))
+            }
         }
     },
 };
