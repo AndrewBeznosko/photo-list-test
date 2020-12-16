@@ -1,4 +1,11 @@
 // ===============================================================
+// base
+// ===============================================================
+.d-none {
+    display: none !important;
+}
+
+// ===============================================================
 // vendor-filter
 // ===============================================================
 .vendor-filter {
@@ -14,19 +21,14 @@
     box-sizing: border-box;
 
     &__header {
-        margin: 0 0 1.5rem;
+        margin: 0 0 25px;
     }
 
     &__title {
         font-weight: bold;
         font-size: 1.4rem;
         line-height: 1.9rem;
-    }
-
-    &__name {
-        margin: 0 0.5rem;
-        text-decoration: underline;
-        cursor: pointer;
+        display: flex;
     }
 
     &__scroll-wrap {
@@ -111,5 +113,55 @@
         overflow: hidden;
         height: 1.2em;
         white-space: nowrap;
+    }
+
+    &__btns {
+        margin-left: auto;
+    }
+
+    &__btn-icon {
+        display: inline-block;
+        margin: 0 5px;
+        width: 25px;
+        min-width: 25px;
+        height: 25px;
+        border: none;
+        border-radius: 4px;
+        background-color: #F7F8F9;
+        background-image: url('~assets/img/heart.svg');
+        background-size: 68%;
+        background-position: center center;
+        background-repeat: no-repeat;
+        cursor: pointer;
+
+        &--is-favorite {
+            background-image: url('~assets/img/times.svg');
+            background-size: 48%;
+            background-position: center center;
+        }
+
+        &:hover {
+            filter: invert(1);
+        }
+    }
+}
+
+// ===============================================================
+// filters-list
+// ===============================================================
+.filters-list {
+    margin: 0 1rem;
+
+    &__item {
+        margin: 0 0.125rem;
+        cursor: pointer;
+        background-color: #F7F8F9;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+
+        &:hover,
+        &--active {
+            filter: invert(1);
+        }
     }
 }
