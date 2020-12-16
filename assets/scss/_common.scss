@@ -1,8 +1,21 @@
 // ===============================================================
 // base
 // ===============================================================
+html,
+body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Open Sans';
+    font-weight: bold;
+    font-size: 16px;
+}
+
 .d-none {
     display: none !important;
+}
+
+.ml-auto {
+    margin-left: auto !important;
 }
 
 // ===============================================================
@@ -14,20 +27,26 @@
     width: 1300px;
     height: 600px;
     margin: auto;
-    padding: 3.6rem 4.8rem 6rem;
+    padding: 2.5rem 3.75rem 3.75rem;
     font-size: 1.2rem;
-    background: #ffffff;
-    border-radius: 1.2rem;
+    background: $white;
+    border-radius: 0.75rem;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 
     &__header {
-        margin: 0 0 25px;
+        margin: 0 0 1.5625rem;
+
+        @media #{$max-lg} {
+            margin-bottom: 0.7rem;
+        }
     }
 
     &__title {
         font-weight: bold;
-        font-size: 1.4rem;
-        line-height: 1.9rem;
+        font-size: 0.875rem;
+        line-height: 1.1875rem;
         display: flex;
     }
 
@@ -50,13 +69,37 @@
     &__list {
         position: relative;
         column-count: 4;
-        column-gap: 30px;
+        column-gap: 1.875rem;
 
         &--no-columns {
             column-count: 0;
             display: flex;
             flex-direction: column;
         }
+    }
+
+    &__controls {
+        display: flex;
+        align-items: center;
+    }
+
+    @media #{$max-lg} {
+        height: 100vh;
+        width: 100vw;
+        border-radius: 0;
+
+        &__list {
+            column-count: 2;
+        }
+    }
+
+    @media #{$max-md} {
+        padding: 1rem;
+
+        &__controls {
+            flex-direction: column;
+            align-items: flex-start;
+        }    
     }
 }
 
@@ -66,22 +109,22 @@
 .media-group {
     display: inline-block;
     max-width: 100%;
-    margin-bottom: 26px;
+    margin-bottom: 1.625rem;
 
     &__title {
         display: inline-block;
-        min-width: 52px;
+        min-width: 3.25rem;
         margin: 0;
         font-weight: bold;
-        font-size: 12px;
-        line-height: 16px;
+        font-size: 0.75rem;
+        line-height: 1rem;
         text-align: center;
-        color: #1B204F;
+        color: $primary;
     }
 }
 
 .media {
-    background: #F7F8F9;
+    background: $light;
     border-radius: 8px;
     padding: 4px;
     margin-top: 8px;
@@ -94,31 +137,27 @@
         height: 32px;
         margin-right: 10px;
         position: relative;
-        background-color: #C4C4C4;
-        border-radius: 8px;
+        background-color: $secondary;
+        border-radius: 0.5rem;
     }
 
     &__img {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 8px;
+        @include object-fit-absolute();
+        border-radius: 0.5rem;
     }
 
     &__txt {
         font-style: normal;
         font-weight: bold;
-        font-size: 12px;
-        line-height: 16px;
-        color: #1C214C;
+        font-size: 0.75rem;
+        line-height: 1rem;
+        color: $dark-blue;
         text-overflow: ellipsis;
         margin: 0;
         overflow: hidden;
         height: 1.2em;
         white-space: nowrap;
+        text-transform: capitalize;
     }
 
     &__btns {
@@ -127,13 +166,13 @@
 
     &__btn-icon {
         display: inline-block;
-        margin: 0 5px;
-        width: 25px;
-        min-width: 25px;
-        height: 25px;
+        margin: 0 0.3125rem;
+        width: 1.5625rem;
+        min-width: 1.5625rem;
+        height: 1.5625rem;
         border: none;
-        border-radius: 4px;
-        background-color: #F7F8F9;
+        border-radius: 0.25rem;
+        background-color: $light;
         background-image: url('~assets/img/heart.svg');
         background-size: 68%;
         background-position: center center;
@@ -159,15 +198,41 @@
     margin: 0 1rem;
 
     &__item {
-        margin: 0 0.125rem;
+        margin: 0 0.1rem;
         cursor: pointer;
         background-color: #F7F8F9;
-        padding: 0.25rem 0.5rem;
+        padding: 0.15rem 0.25rem;
         border-radius: 0.25rem;
+        font-size: 0.8125rem;
 
         &:hover,
         &--active {
             filter: invert(1);
         }
+    }
+
+    @media #{$max-md} {
+        margin: 1.5rem -0.125rem 0;
+    }
+}
+
+// ===============================================================
+// close-btn
+// ===============================================================
+.close-btn {
+    border: none;
+    width: 1.5625rem;
+    min-width: 1.5625rem;
+    height: 1.5625rem;
+    border-radius: 0.25rem;
+    background-image: url('~assets/img/times.svg');
+    background-size: 48%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-color: $white;
+    cursor: pointer;
+
+    &:hover {
+        filter: invert(1);
     }
 }

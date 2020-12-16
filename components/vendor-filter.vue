@@ -2,14 +2,17 @@
     <div class="vendor-filter">
         <div class="vendor-filter__header">
             <div class="vendor-filter__title">
-                Фильтр:
-                <div class="filters-list">
-                    <label v-for="filter in filters" 
-                          class="filters-list__item" 
-                          :key="filter.id" 
-                          :class="{ 'filters-list__item--active' : filter.id == selectedFilter }"
-                    ><input type="radio" name="filter" class="d-none" :value="filter.id" v-model="selectedFilter"> {{ filter.name }}</label>
+                <div class="vendor-filter__controls">
+                    Фильтр:
+                    <div class="filters-list">
+                        <label v-for="filter in filters" 
+                            class="filters-list__item" 
+                            :key="filter.id" 
+                            :class="{ 'filters-list__item--active' : filter.id == selectedFilter }"
+                        ><input type="radio" name="filter" class="d-none" :value="filter.id" v-model="selectedFilter"> {{ filter.name }}</label>
+                    </div>
                 </div>
+                <button class="close-btn ml-auto"></button>
             </div>
         </div>
         <div class="vendor-filter__scroll-wrap">
@@ -109,10 +112,10 @@ export default {
                 this.selectedFilter = selectedFilter
                 this.initFilters(selectedFilter)
             } else {
-                this.transformPhotos(JSON.parse(this.shortAlbumsList))
+                this.transformPhotosByAZ(JSON.parse(this.shortAlbumsList))
             }
         },
-        transformPhotos(photos) {
+        transformPhotosByAZ(photos) {
             let arrSorted = this.sortByField(photos, 'title'),
                 arrGrouped = this.groupBySymb(arrSorted)
             
@@ -189,7 +192,7 @@ export default {
         },
         initFilters(val) {
             if(this.filters.byAZ.id == val) {
-                this.transformPhotos(JSON.parse(this.shortAlbumsList))
+                this.transformPhotosByAZ(JSON.parse(this.shortAlbumsList))
             } else if(this.filters.byAlbum.id == val) {
                 this.transformPhotosByAlbum(JSON.parse(this.shortAlbumsList))
             }

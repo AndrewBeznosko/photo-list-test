@@ -4,17 +4,19 @@ export default {
     head: {
         title: 'Photobank',
         meta: [
-            { charset: 'utf-8' },
+            { 
+                charset: 'utf-8' 
+            },
+            { 
+                name: 'viewport',
+                content: 'width=device-width, user-scalable=no'
+            }
         ],
     },
 
-    plugins: [],
-
     modules: ['@nuxtjs/axios'],
 
-    buildModules: [],
-
     css: [
-        '~/assets/css/main.scss'
+        '~/assets/scss/main.scss'
     ]
 };
